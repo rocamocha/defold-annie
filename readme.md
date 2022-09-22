@@ -11,9 +11,10 @@ The main utilities of Annie are:
 Currently Annie's main purpose is to assist with aligning animation groups to each other.
 
 # Say what now? 🤔
-
+This description is a bit of a mouthful...
 >animation groups that consist of 2D sprites with differing uniform dimensions
-The above description is a bit technical. If you're having trouble understanding what this means, here's a practical description of the problem Annie tries to solve.
+
+If you're having trouble understanding what this means, here's a practical description of the problem Annie tries to solve.
 
 Imagine you have a tall sprite:
 ![tall](example/images/tall1.png)
