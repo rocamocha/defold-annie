@@ -71,7 +71,7 @@ Your animation data for Annie should be a table that follows this structure:
     -- etc.
 }
 ```
-For large projects where atlases contain numerous animation groups, or a larger number of distinct objects need to have Annie installed, the follow procedure to manage your animation data is recommended:
+For large projects where atlases contain numerous animation groups, or a larger number of distinct objects need to have Annie installed, the following procedure to manage your animation data is recommended:
 >Serialize your animation sets into separate files and either
 >1. write a deserializer that consolidates them into a single table to feed into Annie at runtime
 >2. or require the relevant file in the script installing Annie, then pass the data into the `data` parameter
@@ -227,7 +227,7 @@ Sets the cursor position of each linked sprite using `go.animate()` [See Defold 
 - `cursor` - (number) cursor position to set (must be =0 & <=1)
 ***
 ## `annie.flip_offset(flip_x, flip_y)`
-Multiples the affected value in the position vector3 of linked gameobjects by -1 and sets their positions.
+Multiplies the affected value in the position vector3 of linked gameobjects by -1 and sets their positions. This is done *after* the initial auto-alignment from `annie.play_anim()`, so unless your animation data changes the output will always be the same! In other words, you should be tracking the flip state in your game logic, NOT with Annie!
 Disabled when the instance is locked.
 ### PARAMETERS
 - `flip_x` - (boolean) true to flip the X offset
