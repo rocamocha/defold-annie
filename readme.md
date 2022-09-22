@@ -26,6 +26,7 @@ For these sprites, you want to keep the circle aligned to the origin of your mai
 To achieve this, you would need to:
 - move the wide sprite to the left at runtime
 - move the tall sprite up at runtime
+
 Since a sprite component's position can't be altered by scripting at runtime, you need to child the sprite component to a gameobject and manipulate that gameoject's position instead.
 
 For a larger number of animations that don't have the same size, it becomes quickly apparent that if you don't come up with a manageable data structure to source these position offsets from, things might get messy!
