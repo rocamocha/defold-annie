@@ -148,7 +148,7 @@ end
 See the API reference for a usage explanation of `.flip_offset()` and more of Annie's utilities.
 
 *Advanced:*
-You can ignore this dummy function and access the utilities with your own external function wrappers if that makes more sense for your use case (inclusion of utilities based on game state, for example). However, if you do this `annie.lock()` and `annie.unlock()` cannot be used for their secondary function of playing an animation while locking/unlocking the instance, and you will also need to overwrite `annie.animation_done()`.
+You can ignore this dummy function and access the utilities with your own external function wrappers if that makes more sense for your use case (inclusion of utilities based on game state, for example). However, if you do this `annie.lock()` and `annie.unlock()` cannot be used for their secondary function of playing an animation while locking/unlocking the instance since they call `annie.play()` for this, and you will also need to overwrite `annie.animation_done()` if you want to keep this functionality.
 
 ## 3. Locking and unlocking the Annie instance
 ***
@@ -157,13 +157,13 @@ It is possible to 'lock' the instance, preventing the internal state from being 
 self.annie.lock()
 self.annie.unlock()
 ```
-This is useful if you want to integrate the state of the instance into your game logic.
+Useful if you want to integrate the state of the instance into your game logic.
 
 Both functions will also attempt to call `annie.play()`, useful for keeping your code compact!
 
 ## 4. Features around `animation_done`
 ***
-To make use of built-in utilities that have to do with the `animation_done` message, add `annie.animation_done()` to your script's `on_message()`:
+To make use of built-in utilities that involve the `animation_done` message, add `annie.animation_done()` to your script's `on_message()`:
 ```lua
 function on_message(self, message_id, message, sender)
     if message_id == hash('animation_done') then
@@ -172,7 +172,7 @@ function on_message(self, message_id, message, sender)
 end
 ```
 
-Sometimes, you may want to link timers to your animation so that they can be cancelled when the animation is finished. Annie provides a place to store timer handles and a method to cancel them through the Annie instance, which could make it easier to manage and keep track of depending on your use case:
+Sometimes, you may want to link timers to your animation to cancel when the animation is finished. Annie provides a place to store timer handles and a method to cancel them through the instance, which could make it easier to manage and keep track of depending on your use case:
 ```lua
 local my_timer = timer.delay(1, false, function() print('I\'m a linked timer!') end)
 self.annie.add_linked_timer(my_timer)
