@@ -30,10 +30,10 @@ annie = {
     objects = {},
     sprites = {},
     animation_set = animation_set 
-	current_animation = ''
+    current_animation = ''
     last_animation = ''
-	locked = false
-	linked_timers = {}
+    locked = false
+    linked_timers = {}
     cursor = 0
     -- API functions not listed here, but this is where they live
 }
