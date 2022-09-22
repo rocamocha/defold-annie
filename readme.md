@@ -224,7 +224,7 @@ Sets the position of each linked gameobject with `go.set_position()` [See Defold
 ## `annie.set_cursor(cursor)`
 Sets the cursor position of each linked sprite using `go.animate()` [See Defold API](https://defold.com/ref/stable/go/?q=go.animate#go.animate:url-property-playback-to-easing-duration-[delay]-[complete_function])
 ### PARAMETERS
-- `cursor` - (number) cursor position to set (must be =0 & <=1)
+- `cursor` - (number) cursor position to set (must be >=0 & <=1)
 ***
 ## `annie.flip_offset(flip_x, flip_y)`
 Multiplies the affected value in the position vector3 of linked gameobjects by -1 and sets their positions. This is done *after* the initial auto-alignment from `annie.play_anim()`, so unless your animation data changes the output will always be the same! In other words, you should be tracking the flip state in your game logic, NOT with Annie!
