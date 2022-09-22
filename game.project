@@ -13,6 +13,9 @@ input_method = HiddenInputField
 
 [project]
 title = defold-annie
+version = 1.0.0
+developer = rocamocha
+publisher = rocamocha
 
 [library]
 include_dirs = annie

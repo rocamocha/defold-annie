@@ -78,7 +78,7 @@ For large projects where atlases contain numerous animation groups, or a larger 
 
 ## 2. Implementing Annie
 
-Annie tries not to assume what specific skills of hers that you need, and her features are compartmentalized where possible. To make customization of Annie's usage possible, many of her utilities are exposed and it is up to you to implement them.
+Annie tries not to assume what specific skills of hers that you need, and her features are compartmentalized where possible. To make customization of Annie's usage possible, many of her utilities are exposed and it is up to you to implement them. However, there are some higher-level assumptions made to make instance management easy and intuitive.
 
 ### 2a. Linking gameobjects and sprites to Annie
 ***
@@ -145,7 +145,10 @@ function init(self)
     end
 end
 ```
-You could also ignore this dummy function and access the utilities with your own external function wrappers if that makes more sense for your use case (inclusion of utilities based on game state, for example). However, if you do this `annie.lock()` and `annie.unlock()` cannot be used for their secondary function of playing an animation while locking/unlocking the instance. See the API reference for a usage explanation of `.flip_offset()` and more of Annie's utilities.
+See the API reference for a usage explanation of `.flip_offset()` and more of Annie's utilities.
+
+*Advanced:*
+You can ignore this dummy function and access the utilities with your own external function wrappers if that makes more sense for your use case (inclusion of utilities based on game state, for example). However, if you do this `annie.lock()` and `annie.unlock()` cannot be used for their secondary function of playing an animation while locking/unlocking the instance, and you will also need to overwrite `annie.animation_done()`.
 
 ## 3. Locking and unlocking the Annie instance
 ***
@@ -180,61 +183,65 @@ Either behaviour can be removed or replaced by overwriting the function.
 
 # API
 The API is used by calling functions from the installed Annie instance.
-
->## `annie.link(urlstring, sprite_name)`
->Links a gameobject-sprite pair to the instance.
->### PARAMETERS
->`urlstring` - (string) passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
->`sprite_name` - (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite.
-
->## `annie.mlink(...)`
->Links any number of gameobject-sprite pairs to the instance, using sprite name `'sprite'`.
->### PARAMETERS
->`...` - urlstrings passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
-
->## `annie.mlink(t)`
->Links gameobject-sprite pairs to the instance using table keys as the urlstring and values as the sprite name.
->`t` - (table)
-
->## `annie.play_anim(animation, mode, ...)`
->Plays an animation.
->Attempts to index provided animation data for offsets to use.
->Variable utility by passing `mode`.
->### PARAMETERS
->`animation` - (string) the animation_id to use internally with `msg.post()`. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.post#msg.post:receiver-message_id-[message])
-
->## `annie.offset(x, y)`
->Sets the position of each linked gameobject with `go.set_position()` [See Defold API](https://defold.com/ref/stable/go/?q=go.set_position#go.set_position:position-[id])
->### PARAMETERS
->`x` - (number) the X position to set
->`y` - (number) the Y position to set
-
->## `annie.offset(t)`
->Sets the position of each linked gameobject with `go.set_position()` [See Defold API](https://defold.com/ref/stable/go/?q=go.set_position#go.set_position:position-[id])
->### PARAMETERS
->`t` - (table) the X and Y positions to set: `{x,y}`
-
-> ## `annie.set_cursor(cursor)`
->Sets the cursor position of each linked sprite using `go.animate()` [See Defold API](https://defold.com/ref/stable/go/?q=go.animate#go.animate:url-property-playback-to-easing-duration-[delay]-[complete_function])
->### PARAMETERS
->`cursor` - (number) cursor position to set (must be >=0 & <=1)
-
->## `annie.flip_offset(flip_x, flip_y)`
->Multiples the affected value in the position vector3 of linked gameobjects by -1 and sets their positions.
->Disabled when the instance is locked.
->### PARAMETERS
->`flip_x` - (boolean) true to flip the X offset
->`flip_y` - (boolean) true to flip the Y offset
-
->## `annie.lock(animation, mode, ...)`
->Attempts to call `annie.play()`, then locks the instance.
->### PARAMETERS
->See `annie.play_anim()`
-
->## `annie.unlock(animation, mode, ...)`
->Unlocks the instance, then attempts to call `annie.play()`.
->### PARAMETERS
->See `annie.play_anim()`
+***
+## `annie.link(urlstring, sprite_name)`
+Links a gameobject-sprite pair to the instance.
+### PARAMETERS
+- `urlstring` - (string) passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
+- `sprite_name` - (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite.
+***
+## `annie.mlink(...)`
+Links any number of gameobject-sprite pairs to the instance, using sprite name `'sprite'`.
+### PARAMETERS
+- `...` - urlstrings passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
+***
+## `annie.mlink(t)`
+Links gameobject-sprite pairs to the instance using table keys as the urlstring and values as the sprite name.
+- `t` - (table)
+***
+## `annie.play_anim(animation, mode, ...)`
+Plays an animation.
+Attempts to index provided animation data for offsets to use.
+Variable utility by passing `mode`.
+### PARAMETERS
+- `animation` - (string) the animation_id to use internally with `msg.post()`. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.post#msg.post:receiver-message_id-[message])
+- `mode` - (hash):
+    - `hash('keep_cursor')` - keeps the cursor position if the last animation matches any of the parameters passed with `...` or from the provided animation data if there are none passed
+    - `hash('force_replay')` - forces the animation message to be sent even if the current animation matches the animation you are trying to play
+- `...` - additional parameters used by logic determined by `mode`
+***
+## `annie.offset(x, y)`
+Sets the position of each linked gameobject with `go.set_position()` [See Defold API](https://defold.com/ref/stable/go/?q=go.set_position#go.set_position:position-[id])
+### PARAMETERS
+- `x` - (number) the X position to set
+- `y` - (number) the Y position to set
+***
+## `annie.offset(t)`
+Sets the position of each linked gameobject with `go.set_position()` [See Defold API](https://defold.com/ref/stable/go/?q=go.set_position#go.set_position:position-[id])
+### PARAMETERS
+- `t` - (table) the X and Y positions to set: `{x,y}`
+***
+## `annie.set_cursor(cursor)`
+Sets the cursor position of each linked sprite using `go.animate()` [See Defold API](https://defold.com/ref/stable/go/?q=go.animate#go.animate:url-property-playback-to-easing-duration-[delay]-[complete_function])
+### PARAMETERS
+- `cursor` - (number) cursor position to set (must be =0 & <=1)
+***
+## `annie.flip_offset(flip_x, flip_y)`
+Multiples the affected value in the position vector3 of linked gameobjects by -1 and sets their positions.
+Disabled when the instance is locked.
+### PARAMETERS
+- `flip_x` - (boolean) true to flip the X offset
+- `flip_y` - (boolean) true to flip the Y offset
+***
+## `annie.lock(animation, mode, ...)`
+Attempts to call `annie.play()`, then locks the instance.
+### PARAMETERS
+See `annie.play_anim()`
+***
+## `annie.unlock(animation, mode, ...)`
+Unlocks the instance, then attempts to call `annie.play()`.
+### PARAMETERS
+See `annie.play_anim()`
 
 # Author
 rocamocha
