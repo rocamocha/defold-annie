@@ -94,6 +94,10 @@ In either case, your animation data for Annie should be a table that follows thi
     -- etc.
 }
 ```
+If an animation doesn't need an offset, you don't need to include it at all. Annie will automatically add an entry for the missing data!
+
+*Important:* This 'automatic data creation' does of course have a small overhead. If you *really* need to remove it, Annie will not break as long as *ALL* animations that are played through Annie are provided in the data.
+
 For large projects where atlases contain numerous animation groups, or a larger number of distinct objects need to have Annie installed, the following procedure to manage your animation data is recommended:
 >Serialize your animation sets into separate files and either
 >1. write a deserializer that consolidates them into a single table to feed into Annie at runtime
