@@ -1,0 +1,46 @@
+local annie = require 'annie.annie'
+local data = require 'example.data'
+annie.data = data -- you need to provide annie with your own data, read the docs!
+
+function init(self)
+    print([[ Controls:
+    Use the left mouse button to switch between the tall and wide sprites while keeping the cursor.
+    Use the right mouse mouse button to flip the wide sprite while forcing a replay of the animation.
+    ]])
+    
+    do -- just centering with the default rendering
+        local width, height = window.get_size()
+        local pos = vmath.vector3(width * 0.5, height * 0.5, 0)
+        go.set_position(pos)
+    end  
+      
+    msg.post('.', 'acquire_input_focus')
+
+    -----------------------------------
+    -- annie installation
+    self.annie = annie.install('example')
+    self.annie.link('parent')
+
+    function self.annie.play(animation, mode, ...)
+        self.annie.play_anim(animation, mode, ...)
+        self.annie.flip_offset(self.flipped, nil)
+    end
+
+    self.annie.play('wide', hash('keep_cursor'))
+end
+
+function on_input(self, action_id, action)
+    if action_id == hash('mb1') and action.pressed then
+        if self.annie.current_animation == 'wide' then
+            self.annie.play('tall', hash('keep_cursor'))
+        elseif self.annie.current_animation == 'tall' then
+            self.annie.play('wide', hash('keep_cursor'))
+        end
+    end
+
+    if action_id == hash('mb2') and action.pressed then
+        self.flipped = not self.flipped
+        sprite.set_hflip('parent#sprite', self.flipped)
+        self.annie.play('wide', hash('force_replay'))
+    end
+end

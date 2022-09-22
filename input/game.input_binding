@@ -1,0 +1,8 @@
+mouse_trigger {
+  input: MOUSE_BUTTON_1
+  action: "mb1"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_2
+  action: "mb2"
+}
