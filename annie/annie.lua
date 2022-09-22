@@ -127,7 +127,7 @@ function m.install(animation_set, data)
 
         if not annie.animation_set then
             local err = flip_x and 'X' or ''
-            local err = flip_y and err..'Y' or err
+            err = flip_y and err..'Y' or err
             print('[Annie]: Can\'t flip '..err..' offset(s) for '..tostring(msg.url())..' -> animation_set is missing.')
             return
         end
@@ -159,7 +159,7 @@ function m.install(animation_set, data)
 	end
 
 	-- links a display gameobject to this annie instance
-	-- the linked objects should all have the same animation groups!
+	-- the linked objects should all have the same animation groups per instance!
 	function annie.link(urlstring, sprite_name)
         local c = sprite_name or '#sprite'
 		annie.objects[#annie.objects + 1] = msg.url(urlstring)

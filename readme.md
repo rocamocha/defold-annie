@@ -8,7 +8,28 @@ The main utilities of Annie are:
 - ability to lock and unlock animations
 - ability to retain the cursor position between different animations
 
-Currently Annie's main purpose is to assist with aligning the animation groups to each other.
+Currently Annie's main purpose is to assist with aligning animation groups to each other.
+
+# Say what now? 🤔
+
+>animation groups that consist of 2D sprites with differing uniform dimensions
+The above description is a bit technical. If you're having trouble understanding what this means, here's a practical description of the problem Annie tries to solve.
+
+Imagine you have a tall sprite:
+![tall](example/images/tall1.png)
+
+And a wide sprite:
+![wide](example/images/wide1.png)
+
+For these sprites, you want to keep the circle aligned to the origin of your main gameobject.
+To achieve this, you would need to:
+- move the wide sprite to the left at runtime
+- move the tall sprite up at runtime
+Since a sprite component's position can't be altered by scripting at runtime, you need to child the sprite component to a gameobject and manipulate that gameoject's position instead.
+
+For a larger number of animations that don't have the same size, it becomes quickly apparent that if you don't come up with a manageable data structure to source these position offsets from, things might get messy!
+
+Annie was originally written to solve this exact problem, and it solved the problem so well that I started added more features that take care of common techniques that I found myself using that took advantage of being integrated with Annie's auto-alignment utility!
 
 # Usage
 
@@ -43,9 +64,9 @@ Both parameters of the install function are optional. Excluding them from your c
 
 The `animation_set` parameter is used internally as a key for a value lookup that corresponds to your hardcoded animation data.
 Annie looks for a value that matches your `animation_set` from a table within Annie's module with the key `'data'`.
-You can override this internal lookup and provide the Annie instance being installed with it's own *unique* data with the `data` parameter of the install function.
+You can override this internal lookup and provide the Annie instance being installed with it's own *unique* data by using the `data` parameter of the install function.
 
-Your animation data for Annie should be a table that follows this structure:
+In either case, your animation data for Annie should be a table that follows this structure:
 ```lua
 {
     arbitrary_readable_name = { -- this is what Annie looks for with the animation_set parameter
@@ -82,7 +103,14 @@ Annie tries not to assume what specific skills of hers that you need, and her fe
 
 ### 2a. Linking gameobjects and sprites to Annie
 ***
-An installed Annie instance needs to know which gameobjects she should worry about. Usually, it makes sense for your main script to be attached to a 'primary' gameobject for which the main positional updates are handled through. A 'display' gameobject that is a child to this 'primary' gameobject can then be used to handle the offsets for sprites with non-uniform animation dimensions. This 'display' gameobject is the gameobject that should be linked to Annie.
+An installed Annie instance needs to know which gameobjects she should worry about.
+Usually, it makes sense for your main script to be attached to a 'primary' gameobject for which the main positional updates are handled through.
+A 'display' gameobject that is a child to this 'primary' gameobject can then be used to handle the offsets for a sprite with non-uniform animation dimensions.
+The 'display' gameobject should be linked to Annie.
+
+An example of this hierarchy:
+
+![hierarchy](docs/typical_setup.png)
 
 *Very important:*
 >Currently, Annie understands each linked gameobject as only having a single sprite component. Please keep this limitation in mind.
@@ -130,7 +158,7 @@ end
 ```
 A common utility that you may need to add to the function is Annie's ability to flip one or both of the offsets from your animation data.
 
-For example, it would be useful if you had an object where you've offset the animation on the X axis, and the object can face either left or right. When the object changes the direction it faces, you would need to flip the offsets to keep it aligned to the origin of the parent gameobject by the same factors when mirrored.
+For example, if you had an object where you've offset the animation on the X axis and the object can face either left or right. When the object changes the direction it faces, you might need to flip the offsets to keep it aligned to the origin of the parent gameobject by the same factors when mirrored.
 
 To add this functionality, simply overwrite the `annie.play()` function and add it in after Annie's installation:
 ```lua
@@ -172,7 +200,7 @@ function on_message(self, message_id, message, sender)
 end
 ```
 
-Sometimes, you may want to link timers to your animation to cancel when the animation is finished. Annie provides a place to store timer handles and a method to cancel them through the instance, which could make it easier to manage and keep track of depending on your use case:
+Sometimes, you may want to link timers to your animation to cancel them when the animation is finished. Annie provides a place to store timer handles and a method to cancel them through the instance, which could make it easier to manage and keep track of depending on your use case:
 ```lua
 local my_timer = timer.delay(1, false, function() print('I\'m a linked timer!') end)
 self.annie.add_linked_timer(my_timer)
