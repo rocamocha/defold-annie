@@ -188,7 +188,7 @@ The API is used by calling functions from the installed Annie instance.
 Links a gameobject-sprite pair to the instance.
 ### PARAMETERS
 - `urlstring` - (string) passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
-- `sprite_name` - (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite.
+- `sprite_name` - `optional` (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite. Uses `'#sprite` if none is provided.
 ***
 ## `annie.mlink(...)`
 Links any number of gameobject-sprite pairs to the instance, using sprite name `'sprite'`.
@@ -205,10 +205,10 @@ Attempts to index provided animation data for offsets to use.
 Variable utility by passing `mode`.
 ### PARAMETERS
 - `animation` - (string) the animation_id to use internally with `msg.post()`. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.post#msg.post:receiver-message_id-[message])
-- `mode` - (hash):
+- `mode` - `optional` (hash):
     - `hash('keep_cursor')` - keeps the cursor position if the last animation matches any of the parameters passed with `...` or from the provided animation data if there are none passed
     - `hash('force_replay')` - forces the animation message to be sent even if the current animation matches the animation you are trying to play
-- `...` - additional parameters used by logic determined by `mode`
+- `...` - `optional` additional parameters used by logic determined by `mode`
 ***
 ## `annie.offset(x, y)`
 Sets the position of each linked gameobject with `go.set_position()` [See Defold API](https://defold.com/ref/stable/go/?q=go.set_position#go.set_position:position-[id])
@@ -234,12 +234,12 @@ Disabled when the instance is locked.
 - `flip_y` - (boolean) true to flip the Y offset
 ***
 ## `annie.lock(animation, mode, ...)`
-Attempts to call `annie.play()`, then locks the instance.
+Attempts to call `annie.play()` if an animation is provided, then locks the instance.
 ### PARAMETERS
 See `annie.play_anim()`
 ***
 ## `annie.unlock(animation, mode, ...)`
-Unlocks the instance, then attempts to call `annie.play()`.
+Unlocks the instance, then attempts to call `annie.play()` if an animation is provided.
 ### PARAMETERS
 See `annie.play_anim()`
 
