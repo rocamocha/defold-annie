@@ -224,8 +224,8 @@ Links a gameobject-sprite pair to the instance.
 - `urlstring` - (string) passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
 - `sprite_name` - `optional` (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite. Uses `'#sprite` if none are provided.
 ### RETURN
-- `object` - (url) the return of the `msg.url` call provided the gameobject urlstring
-- `sprite` - (url) the return of the `msg.url` call provided the sprite component urlstring
+- `object` - (url) the return of the `msg.url()` call provided with the gameobject urlstring
+- `sprite` - (url) the return of the `msg.url()` call provided with the sprite component urlstring
 ***
 ## `annie.mlink(...)`
 Links any number of gameobject-sprite pairs to the instance, using sprite name `'sprite'`.
