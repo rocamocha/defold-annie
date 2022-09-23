@@ -288,4 +288,5 @@ MIT
 - Improve internal functions to allow Annie to affect gameobjects with multiple sprite components.
 - Add functionality for a separate alignment relative to the grandparent gameobject.
 - Decouple the alignment structure and expose it in a way that makes advanced usage intuitive.
+- Make the animation cursor usable through Annie's public access. (She doesn't have an `update()` right now so the `annie.cursor` value is only used internally for the `keep_cursor` animation mode).
 
