@@ -231,6 +231,17 @@ Links a gameobject-sprite pair to the instance.
 Links any number of gameobject-sprite pairs to the instance, using sprite name `'sprite'`.
 ### PARAMETERS
 - `...` - urlstrings passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
+### RETURN
+- (table) containing an array of only the gameobject-sprite components linked by this specific call represented as 2 tables of equal length starting with index 1:
+```lua
+{
+    objects = {
+        1 = url: [socket:/path]
+    },
+    sprites = {
+        1 = url: [socket:/path#fragment]
+    }
+}
 ***
 ## `annie.mlink(t)`
 Links gameobject-sprite pairs to the instance using table keys as the urlstring and values as the sprite name. Calls `annie.link()` internally to accomplish this.
