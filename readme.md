@@ -3,7 +3,7 @@ Annie is a utility module written for the Defold game engine that provides some 
 
 The main utilities of Annie are:
 - basic animation switch for lightweight integration into responsive logic in your `update()` (Annie doesn't send the `'play_animation'` message if already playing the animation)
-- ability to bypass the animation switch, to force a replay of the current animation
+- ability to bypass the animation switch, forcing a replay of the current animation
 - automatic alignment of the parent gameobject on playing an animation
 - ability to lock and unlock animations
 - ability to retain the cursor position between different animations
@@ -222,7 +222,10 @@ The API is used by calling functions from the installed Annie instance.
 Links a gameobject-sprite pair to the instance.
 ### PARAMETERS
 - `urlstring` - (string) passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
-- `sprite_name` - `optional` (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite. Uses `'#sprite` if none is provided.
+- `sprite_name` - `optional` (string) the [fragment] part of `urlstring` that corresponds to the gameobject's sprite. Uses `'#sprite` if none are provided.
+### RETURN
+- `object` - (url) the return of the `msg.url` call provided the gameobject urlstring
+- `sprite` - (url) the return of the `msg.url` call provided the sprite component urlstring
 ***
 ## `annie.mlink(...)`
 Links any number of gameobject-sprite pairs to the instance, using sprite name `'sprite'`.
@@ -230,8 +233,21 @@ Links any number of gameobject-sprite pairs to the instance, using sprite name `
 - `...` - urlstrings passed to `msg.url()` internally. [See Defold API](https://defold.com/ref/stable/msg/?q=msg.url#msg.url:urlstring).
 ***
 ## `annie.mlink(t)`
-Links gameobject-sprite pairs to the instance using table keys as the urlstring and values as the sprite name.
-- `t` - (table)
+Links gameobject-sprite pairs to the instance using table keys as the urlstring and values as the sprite name. Calls `annie.link()` internally to accomplish this.
+### PARAMETERS
+- `t` - (table) with keys as the [path] of the urlstring, values as the [fragment]: `{path = fragment}`
+### RETURN
+- (table) containing an array of only the gameobject-sprite components linked by this specific call represented as 2 tables of equal length starting with index 1:
+```lua
+{
+    objects = {
+        1 = url: [socket:/path]
+    },
+    sprites = {
+        1 = url: [socket:/path#fragment]
+    }
+}
+```
 ***
 ## `annie.play_anim(animation, mode, ...)`
 Plays an animation.

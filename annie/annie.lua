@@ -162,25 +162,32 @@ function m.install(animation_set, data)
 	-- the linked objects should all have the same animation groups per instance!
 	function annie.link(urlstring, sprite_name)
         local c = sprite_name or '#sprite'
-		annie.objects[#annie.objects + 1] = msg.url(urlstring)
-        annie.sprites[#annie.sprites + 1] = msg.url(urlstring..c)
+        local object = msg.url(urlstring)
+        local sprite = msg.url(urlstring..c)
+		annie.objects[#annie.objects + 1] = object
+        annie.sprites[#annie.sprites + 1] = sprite
+        
+        return object, sprite
 	end
 
     -- links multiple gameobjects to this annie instance
     function annie.mlink(...)
+        local r = {
+            objects = {},
+            sprites = {}
+        }
+        
         if not type(...) == 'table' then -- use default component name 'sprite'
             for i, v in ipairs({...}) do
-                annie.objects[i] = msg.url(v)
-                annie.sprites[i] = msg.url(v..'#sprite')
+                r.objects[#r.objects + 1], r.sprites[#r.sprites + 1] = annie.link(v)
             end
         else -- use component name provided as a value where the key matches a gameobject urlstring
-            local i = 1
             for k, v in pairs (...) do
-                annie.objects[i] = msg.url(k)
-                annie.sprites[i] = msg.url(k..v)
-                i = i + 1
+                r.objects[#r.objects + 1], r.sprites[#r.sprites + 1] = annie.link(k, v)
             end
         end
+        
+        return r
     end
 
 	function annie.add_linked_timer(handle)
